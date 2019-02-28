@@ -13,6 +13,7 @@ from geofence.geofenceHelper import GeofenceHelper
 from route.routecalc.ClusteringHelper import ClusteringHelper
 from route.routecalc.calculate_route import getJsonRoute
 from utils.collections import Location
+from utils.geo import get_distance_of_two_points_in_meters
 
 log = logging.getLogger(__name__)
 Relation = collections.namedtuple('Relation', ['other_event', 'distance', 'timedelta'])
@@ -296,7 +297,7 @@ class RouteManagerBase(ABC):
         merged = self.clustering_helper.get_clustered(latest)
         return merged
 
-    def get_next_location(self):
+    def get_next_location(self, startLocation):
         log.debug("get_next_location of %s called" % str(self.name))
         if not self._is_started:
             log.info("Starting routemanager %s in get_next_location" % str(self.name))
@@ -324,7 +325,10 @@ class RouteManagerBase(ABC):
                                                              and self._prio_queue and len(self._prio_queue) > 0
                                                              and self._prio_queue[0][0] < time.time())):
             log.debug("%s: Priority event" % str(self.name))
-            next_stop = heapq.heappop(self._prio_queue)[1]
+            sorted_points = sorted(self._prio_queue, key=lambda e: get_distance_of_two_points_in_meters(e.Location.lat, e.Location.lng,startLocation.lat,startLocation.lng ))
+            log.debug("Sorted: %s: " % str(sorted_points))
+            next_stop =  sorted_points[0][1]
+            #next_stop = heapq.heappop(self._prio_queue)[1]
             next_lat = next_stop.lat
             next_lng = next_stop.lng
             self._last_round_prio = True

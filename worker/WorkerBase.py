@@ -367,7 +367,7 @@ class WorkerBase(ABC):
         if routemanager is None:
             return None
         else:
-            self.current_location = routemanager.get_next_location()
+            self.current_location = routemanager.get_next_location(startLocation=self.current_location)
             return routemanager.settings
 
     def _init_routine(self):
