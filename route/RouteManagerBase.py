@@ -327,7 +327,8 @@ class RouteManagerBase(ABC):
             log.info("%s: Priority event" % str(self.name))
             log.info("%s: Priority QUEUE" % str(self._prio_queue))
             sorted_points = sorted(self._prio_queue, key=lambda e: get_distance_of_two_points_in_meters(e[1].lat, e[1].lng,startLocation.lat,startLocation.lng ))
-            log.warning("Sorted: %s: " % str(sorted_points))
+            #log.warning("Sorted: %s: " % str(sorted_points))
+            sorted_points = list(filter(lambda e: get_distance_of_two_points_in_meters(e[1].lat, e[1].lng,startLocation.lat,startLocation.lng ) < 70 , sorted_points)) #filter closest
             next_stop =  sorted_points[0][1]
             self._prio_queue.remove(sorted_points[0])
             #next_stop = heapq.heappop(self._prio_queue)[1]
