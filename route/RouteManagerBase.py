@@ -324,9 +324,10 @@ class RouteManagerBase(ABC):
         if (self.delay_after_timestamp_prio is not None and ((not self._last_round_prio or self.starve_route)
                                                              and self._prio_queue and len(self._prio_queue) > 0
                                                              and self._prio_queue[0][0] < time.time())):
-            log.debug("%s: Priority event" % str(self.name))
+            log.info("%s: Priority event" % str(self.name))
+            log.info("%s: Priority QUEUE" % str(self._prio_queue))
             sorted_points = sorted(self._prio_queue, key=lambda e: get_distance_of_two_points_in_meters(e.Location.lat, e.Location.lng,startLocation.lat,startLocation.lng ))
-            log.debug("Sorted: %s: " % str(sorted_points))
+            log.info("Sorted: %s: " % str(sorted_points))
             next_stop =  sorted_points[0][1]
             #next_stop = heapq.heappop(self._prio_queue)[1]
             next_lat = next_stop.lat
